@@ -11,5 +11,5 @@
 - 速度が欲しい方は、creversi( https://github.com/TadaoYamaoka/creversi )あたりを使う事を強く推奨する。
 
 # ライセンス
-- snail_reversiはMITライセンスのもとにライセンスされている。
+- snail_reversiはMITライセンスです。
 - 詳しくはLICENSEファイルを参照のこと。
