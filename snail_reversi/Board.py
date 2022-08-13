@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+
+"""
+リポジトリへのリンク: https://github.com/YuaHyodo/snail_reversi
+"""
+
 BLACK = True
 WHITE = False
 DRAW = 'draw'
