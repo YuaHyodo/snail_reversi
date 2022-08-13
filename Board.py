@@ -29,33 +29,42 @@ EMPTY = 'empty'
 PASS = 'pass'
 
 class Sq:
+    """
+    こんな実装にする必要はない
+    作り始めた時から大きく変更があったのでこうなってしまった。
+    """
     def __init__(self):
-        self.state = EMPTY
+        self.state = EMPTY#状態
         #self.state_dict = {BLACK: 'X', WHITE: 'O', EMPTY: '-'}
 
-    def change(self, color):
+    def change(self, color):#色を変える
         self.state = color
         return
 
 class Board:
     def __init__(self, sfen=None):
+        #初期化
         self.size = (8, 8)#(横幅, 高さ)
         self.init_board()
         if sfen == None:
+            #初期配置
             self.set_startpos()
         else:
+            #sfenをセット
             self.set_sfen(sfen)
 
-        self.check_squares = ((-1, -1), (-2, -2), (-3, -3), (-4, -4), (-5, -5), (-6, -6), (-7, -7),
-                                   (-1, 0),  (-2, 0), (-3, 0), (-4, 0), (-5, 0), (-6, 0), (-7, 0),
-                                   (-1, 1), (-2, 2), (-3, 3), (-4, 4), (-5, 5), (-6, 6), (-7, 7),
-                                   (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7),
-                                   (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
-                                   (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0),
-                                   (1, -1), (2, -2), (3, -3), (4, -4), (5, -5), (6, -6), (7, -7),
-                                   (0, -1), (0, -2), (0, -3), (0, -4), (0, -5), (0, -6), (0, -7))
+        #無駄実装
+        self.check_squares = ((-1, -1), (-2, -2), (-3, -3), (-4, -4), (-5, -5), (-6, -6), (-7, -7),#左上
+                                   (-1, 0),  (-2, 0), (-3, 0), (-4, 0), (-5, 0), (-6, 0), (-7, 0),#上
+                                   (-1, 1), (-2, 2), (-3, 3), (-4, 4), (-5, 5), (-6, 6), (-7, 7),#右上
+                                   (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7),#右
+                                   (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),#右下
+                                   (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0),#下
+                                   (1, -1), (2, -2), (3, -3), (4, -4), (5, -5), (6, -6), (7, -7),#左下
+                                   (0, -1), (0, -2), (0, -3), (0, -4), (0, -5), (0, -6), (0, -7))#左
 
     def __str__(self):
+        #print(Board)で盤面が良い感じに表示するためのコード
         output = ''
         k = '\n'
         state_str = {BLACK: 'x', WHITE: 'o', EMPTY: '-'}
@@ -66,6 +75,7 @@ class Board:
         return output
 
     def init_board(self):
+        #全部空きマスにする
         """
         [[1段目],
          [2段目],
@@ -81,6 +91,7 @@ class Board:
         return
 
     def set_startpos(self):
+        #初期配置にする
         self.squares[3][3].change(WHITE)
         self.squares[3][4].change(BLACK)
         self.squares[4][3].change(BLACK)
@@ -89,6 +100,7 @@ class Board:
         return
 
     def set_sfen(self, sfen):
+        #sfenを読んで、その通りに盤面をセットする
         sq_states = sfen[0:65]
         turn_of = sfen[64]
         d1 = {'X': BLACK, 'O': WHITE, '-': EMPTY}
@@ -101,6 +113,7 @@ class Board:
         return
 
     def change_turn(self):
+        #手番変更
         if self.turn == BLACK:
             self.turn = WHITE
         else:
@@ -108,6 +121,8 @@ class Board:
         return
 
     def return_sfen(self):
+        #現局面のsfenを生成して返す
+        #手数は面倒なので常に"1"
         sfen = ''
         state_str = {BLACK: 'X', WHITE: 'O', EMPTY: '-'}
         for y in range(self.size[1]):
@@ -119,17 +134,20 @@ class Board:
         return sfen
 
     def usix_move_to_index(self, usix_move):
+        #USI-Xプロトコルでのmoveを、マスの座標に変える
         d1 = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
         index = [int(usix_move[1]) - 1,
                      d1[usix_move[0]]]
         return index
 
     def index_to_usix_move(self, index):
+        #マスの座標を、USI-Xプロトコルでのmoveに変える
         d1 = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
         usix_move = d1[index[1]] + str(index[0] + 1)
         return usix_move
 
     def move_from_usix(self, usix_move):
+        #USI-Xプロトコルのmoveを受け取って、盤面に反映させる
         if usix_move == PASS:
             self.change_turn()
             return
@@ -142,6 +160,7 @@ class Board:
         return
 
     def is_legal(self, usix_move):
+        #手が渡されたときに合法手か判定する
         index = self.usix_move_to_index(usix_move)
         sq = self.squares[index[0]][index[1]]
         my_color = self.turn
@@ -175,6 +194,7 @@ class Board:
         return False
 
     def gen_legal_moves(self):
+        #合法手のリストを生成
         self.legal_moves = []
         for y in range(8):
             for x in range(8):
@@ -186,6 +206,7 @@ class Board:
         return self.legal_moves
 
     def flip_stones(self, usix_move):
+        #手を受け取って、その手を打った時にひっくり返る石のリストを返す
         index = self.usix_move_to_index(usix_move)
         flip_index_list = []
         my_color = self.turn
@@ -223,11 +244,13 @@ class Board:
         return flip_index_list
 
     def is_gameover(self):
+        #終局判定。なお、2連パスは検知しない
         if self.piece_sum() >= self.size[0] * self.size[1]:
             return True
         return False
 
     def piece_sum(self):
+        #石の合計を返す
         pieces = 0
         for y in range(self.size[1]):
             for x in range(self.size[0]):
@@ -236,6 +259,7 @@ class Board:
         return pieces
 
     def piece_num(self):
+        #手番側の石の合計を返す
         pieces = 0
         for y in range(self.size[1]):
             for x in range(self.size[0]):
@@ -244,6 +268,7 @@ class Board:
         return pieces
 
     def opponent_piece_num(self):
+        #非手番側の石の合計を返す
         pieces = 0
         for y in range(self.size[1]):
             for x in range(self.size[0]):
@@ -252,6 +277,11 @@ class Board:
         return pieces
 
     def make_simple_feature(self):
+        """
+        手番側と非手番側、それぞれの、
+        石があるところは1, ないところは0
+        になる配列を返す
+        """
         black = []
         white = []
         for y in range(self.size[1]):
