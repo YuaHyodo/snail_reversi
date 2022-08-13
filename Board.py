@@ -25,6 +25,7 @@ SOFTWARE.
 
 BLACK = True
 WHITE = False
+DRAW = 'draw'
 EMPTY = 'empty'
 PASS = 'pass'
 
@@ -304,6 +305,18 @@ class Board:
         else:
             output = [white, black]
         return output
+
+    def return_winner(self):
+        if not self.is_gameover():
+            return
+        d = {BLACK: WHITE, WHITE: BLACK}
+        my_score = self.piece_num()
+        opponent_score = self.piece_sum() - my_score
+        if my_score == opponent_score:
+            return DRAW
+        if my_score > opponent_score:
+            return self.turn
+        return d[self.turn]
 
 if __name__ == '__main__':
     """
