@@ -19,6 +19,8 @@
 - 速度が欲しい方は、creversi( https://github.com/TadaoYamaoka/creversi )あたりを使う事を強く推奨する。
 
 # 皆さんのPCで使えるようにする方法
+- snail_reversiは、Azisai_Othello_GUI( https://github.com/YuaHyodo/Azisai_Othello_GUI )、<br>
+Ari-Othello-Server( https://github.com/YuaHyodo/Ari-Othello-Server )などの実行に必要です。
 - 確認した環境: windows10, Python3.8
 
 - 注意: 間違っているやり方の可能性が非常に高い
