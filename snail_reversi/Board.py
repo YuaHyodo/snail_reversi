@@ -204,7 +204,7 @@ class Board:
         self.legal_moves = []
         for y in range(8):
             for x in range(8):
-                usix_move = self.index_to_usix_move([x, y])
+                usix_move = self.index_to_usix_move([y, x])
                 if self.is_legal(usix_move):
                     self.legal_moves.append(usix_move)
         if len(self.legal_moves) == 0:
@@ -237,6 +237,7 @@ class Board:
             if (sq.state == EMPTY) or ((sq.state == my_color) and (len(flip_index_list_kari) == 0)):
                 opponent_stone = False
                 direction_skip = True
+                flip_index_list_kari = []
                 continue
             if sq.state == my_color:#相手の石を挟んでいる
                 flip_index_list.extend(flip_index_list_kari)
