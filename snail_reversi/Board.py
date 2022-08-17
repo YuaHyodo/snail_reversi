@@ -313,8 +313,6 @@ class Board:
         return output
 
     def return_winner(self):
-        if not self.is_gameover():
-            return
         d = {BLACK: WHITE, WHITE: BLACK}
         my_score = self.piece_num()
         opponent_score = self.piece_sum() - my_score
