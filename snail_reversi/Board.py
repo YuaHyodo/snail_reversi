@@ -152,6 +152,17 @@ class Board:
         usix_move = d1[index[1]] + str(index[0] + 1)
         return usix_move
 
+    def move_from_index(self, index):
+        if index == PASS:
+            self.change_turn()
+            return
+        self.squares[index[0]][index[1]].change(self.turn)
+        flip_list = self.flip_stones_index_move(index)
+        for i in flip_list:
+            self.squares[i[0]][i[1]].change(self.turn)
+        self.change_turn()
+        return
+
     def move_from_usix(self, usix_move):
         #USI-Xプロトコルのmoveを受け取って、盤面に反映させる
         if usix_move == PASS:
@@ -164,6 +175,38 @@ class Board:
             self.squares[i[0]][i[1]].change(self.turn)
         self.change_turn()
         return
+
+    def is_legal_index_move(self, index):
+        sq = self.squares[index[0]][index[1]]
+        my_color = self.turn
+        if self.turn == BLACK:
+            opponent_color = WHITE
+        else:
+            opponent_color = BLACK
+        if sq.state != EMPTY:
+            return False
+        for i in range(len(self.check_squares)):
+            if i % 7 == 0:
+                opponent_stone = False
+                direction_skip = False
+            if direction_skip:
+                continue
+            index2 = self.check_squares[i]
+            index3 = [(index[0] + index2[0]), (index[1] + index2[1])]
+            if min(index3) < 0:
+                continue
+            if max(index3) > 7:
+                continue
+            sq = self.squares[index3[0]][index3[1]]
+            if (sq.state == EMPTY) or (not opponent_stone and sq.state == my_color):
+                opponent_stone = False
+                direction_skip = True
+                continue
+            if opponent_stone and sq.state == my_color:#相手の石を挟んでいる
+                return True
+            if sq.state == opponent_color:
+                opponent_stone = True
+        return False
 
     def is_legal(self, usix_move):
         #手が渡されたときに合法手か判定する
@@ -199,6 +242,18 @@ class Board:
                 opponent_stone = True
         return False
 
+    def gen_legal_index_moves(self):
+        #合法手のリストを生成
+        legal_index_moves = []
+        for y in range(8):
+            for x in range(8):
+                index_move = [y, x]
+                if self.is_legal_index_move(index_move):
+                    legal_index_moves.append(index_move)
+        if len(legal_index_moves) == 0:
+            legal_index_moves.append(PASS)
+        return legal_index_moves
+
     def gen_legal_moves(self):
         #合法手のリストを生成
         self.legal_moves = []
@@ -210,6 +265,43 @@ class Board:
         if len(self.legal_moves) == 0:
             self.legal_moves.append(PASS)
         return self.legal_moves
+
+    def flip_stones_index_move(self, index):
+        flip_index_list = []
+        my_color = self.turn
+        if self.turn == BLACK:
+            opponent_color = WHITE
+        else:
+            opponent_color = BLACK
+        for i in range(len(self.check_squares)):
+            if i % 7 == 0:
+                opponent_stone = False
+                direction_skip = False
+                flip_index_list_kari = [] 
+            if direction_skip:
+                continue
+            index2 = self.check_squares[i]
+            index3 = [(index[0] + index2[0]), (index[1] + index2[1])]
+            if min(index3) < 0:
+                continue
+            if max(index3) > 7:
+                continue
+            sq = self.squares[index3[0]][index3[1]]
+            if (sq.state == EMPTY) or ((sq.state == my_color) and (len(flip_index_list_kari) == 0)):
+                opponent_stone = False
+                direction_skip = True
+                flip_index_list_kari = []
+                continue
+            if sq.state == my_color:#相手の石を挟んでいる
+                flip_index_list.extend(flip_index_list_kari)
+                flip_index_list_kari = []
+                opponent_stone = False
+                direction_skip = True
+                continue
+            if sq.state == opponent_color:
+                opponent_stone = True
+                flip_index_list_kari.append(index3)
+        return flip_index_list
 
     def flip_stones(self, usix_move):
         #手を受け取って、その手を打った時にひっくり返る石のリストを返す
@@ -326,4 +418,3 @@ if __name__ == '__main__':
     """
     ここにテストとかを書く
     """
-    pass
