@@ -247,9 +247,10 @@ class Board:
         legal_index_moves = []
         for y in range(8):
             for x in range(8):
-                index_move = [y, x]
-                if self.is_legal_index_move(index_move):
-                    legal_index_moves.append(index_move)
+                if self.squares[y][x].state == EMPTY:
+                    index_move = [y, x]
+                    if self.is_legal_index_move(index_move):
+                        legal_index_moves.append(index_move)
         if len(legal_index_moves) == 0:
             legal_index_moves.append(PASS)
         return legal_index_moves
