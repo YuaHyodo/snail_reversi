@@ -98,6 +98,7 @@ class Board:
 
     def set_startpos(self):
         #初期配置にする
+        self.init_board()
         self.squares[3][3].change(WHITE)
         self.squares[3][4].change(BLACK)
         self.squares[4][3].change(BLACK)
@@ -107,6 +108,7 @@ class Board:
 
     def set_sfen(self, sfen):
         #sfenを読んで、その通りに盤面をセットする
+        self.init_board()
         sq_states = sfen[0:65]
         turn_of = sfen[64]
         d1 = {'X': BLACK, 'O': WHITE, '-': EMPTY}
