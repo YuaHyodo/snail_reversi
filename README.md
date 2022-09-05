@@ -8,6 +8,7 @@
 - USI-Xプロトコル(オセロ版)でのmoveやsfenに対応している。
 - USI-Xプロトコル(オセロ版)についてはこちらを参照の事: https://github.com/YuaHyodo/USI-X-protocol_othello_version
 - 将棋版はこちら: https://github.com/YuaHyodo/snail_shogi
+- チェス版はこちら: https://github.com/YuaHyodo/Katatsumuri_Chess
 
 # 搭載されている機能
 - 合法手生成などの基本的機能
