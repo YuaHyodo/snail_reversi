@@ -347,7 +347,13 @@ class Board:
 
     def is_gameover(self):
         #終局判定。なお、2連パスは検知しない
-        if self.piece_sum() >= self.size[0] * self.size[1]:
+        my = self.piece_num()
+        opponent = self.opponent_piece_num()
+        if (my + opponent) >= 64:
+            #盤面が全部埋まった場合
+            return True
+        if my == 0 or opponent == 0:
+            #どちらかが全滅した場合
             return True
         return False
 
